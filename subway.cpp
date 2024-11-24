@@ -72,10 +72,10 @@ void MatrixWGraph::Dijkstra(int line1, string src, int line2, string dst) {
 	int srcnum, dstnum;
 	for (int i = 0; i < node; i++) {
 		if (stlist[i].num == line1 && stlist[i].name == src) {
-			srcnum = i;
+			dstnum = i;
 		}
 		if (stlist[i].num == line2 && stlist[i].name == dst) {
-			dstnum = i;
+			srcnum = i;
 		}
 	}
 
@@ -107,7 +107,7 @@ void MatrixWGraph::Dijkstra(int line1, string src, int line2, string dst) {
 }
 
 void MatrixWGraph::PrintRoute(int srcnum, int dstnum) {
-	stack<int> iroute;
+	/*stack<int> iroute;
 	iroute.push(dstnum);
 
 	int midnode=dstnum;
@@ -127,11 +127,30 @@ void MatrixWGraph::PrintRoute(int srcnum, int dstnum) {
 		cout << stlist[iroute.top()].num<<' '<<stlist[iroute.top()].name <<' '<< dist[iroute.top()].second << endl;
 		prenode = iroute.top();
 		iroute.pop();
+	}*/
+
+	int midnode = -1;
+	int currentnode = dstnum;
+	int prenode = srcnum; //dstnum과 다른 수면서 stlist가 접근할 수 있는 범위 안의 수여야함.
+	while (true) {
+		int temp = dist[currentnode].second - dist[dstnum].second / 2;
+		if (midnode == -1 && temp <= 0) {
+			midnode = currentnode;
+		}
+
+		if (stlist[currentnode].name != stlist[prenode].name) {
+			cout << stlist[currentnode].name << endl;
+		}
+		
+		if (stlist[currentnode].name == stlist[srcnum].name) break;
+		prenode = currentnode;
+		currentnode = dist[currentnode].first;
 	}
+	
 	PrintTime(dist[dstnum].second);
 	cout <<stlist[midnode].num<<' ' << stlist[midnode].name << endl;
-	PrintTime(dist[midnode].second);
 	PrintTime(dist[dstnum].second - dist[midnode].second); 
+	PrintTime(dist[midnode].second);
 }
 
 void MatrixWGraph::PrintTime(int time) {
