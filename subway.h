@@ -18,11 +18,11 @@ class MatrixWGraph {
 	int vertex;
 	int** length;
 	bool* s;
-	pair<int, int>* dist; //first는 이전 노드번호 second는 소요시간
+	int* dist; //first는 이전 노드번호 second는 소요시간
 	Station* stlist; //역의 배열. 인덱스값이 노드의 번호가 된다
 	int count; //stlist에 들어있는 원소의 갯수
 	vector<vector<int>> transfer; //이름이 같은 역들의 노드번호가 하나의 배열을 이룸.
-
+	vector<vector<vector<int>>> paths;
 public:
 	MatrixWGraph(int);
 	void AddVertex(int, string, int, string);

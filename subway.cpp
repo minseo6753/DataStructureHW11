@@ -11,8 +11,9 @@ MatrixWGraph::MatrixWGraph(int n = 0) :node(n), vertex(0), count(0) {
 		length[i][i] = 0;
 	}
 	s = new bool[n]();
-	dist = new pair<int,int>[n];
+	dist = new int[n];
 	stlist = new Station[n];
+	paths.resize(n);
 }
 
 void MatrixWGraph::AddVertex(int num1, string name1, int num2, string name2) {
@@ -80,7 +81,8 @@ void MatrixWGraph::Dijkstra(int line1, string src, int line2, string dst) {
 	}
 
 	for (int i = 0; i < node; i++) {
-		dist[i] = make_pair(srcnum, length[srcnum][i]);
+		dist[i] = length[srcnum][i];
+		paths[i].push_back({ srcnum, i });
 	}
 
 	s[srcnum] = true;
@@ -89,16 +91,28 @@ void MatrixWGraph::Dijkstra(int line1, string src, int line2, string dst) {
 		
 		int temp = dstnum;
 		for (int j = 0; j < node; j++) { //다음으로 방문할 노드 선택
-			if (!s[j] && dist[j].second < dist[temp].second) {
+			if (!s[j] && dist[j] < dist[temp]) {
 				temp = j;
 			}
 		}
 
 		s[temp] = true;
 		for (int j = 0; j < node; j++) {
-			if (!s[j] && dist[temp].second + length[temp][j] < dist[j].second) {
-				dist[j].second = dist[temp].second + length[temp][j];
-				dist[j].first = temp;
+			if (!s[j] && dist[temp] + length[temp][j] < dist[j]) {
+				dist[j] = dist[temp] + length[temp][j];
+			
+
+				paths[j].clear();
+				for (int k = 0; k < paths[temp].size(); k++) {
+					paths[j].push_back(paths[temp][k]);
+					paths[j].back().push_back(j);
+				}
+			}
+			else if (!s[j] && dist[temp] + length[temp][j] == dist[j]) {
+				for (int k = 0; k < paths[temp].size(); k++) {
+					paths[j].push_back(paths[temp][k]);
+					paths[j].back().push_back(j);
+				}
 			}
 		}
 	}
@@ -107,31 +121,35 @@ void MatrixWGraph::Dijkstra(int line1, string src, int line2, string dst) {
 }
 
 void MatrixWGraph::PrintRoute(int srcnum, int dstnum) {
-	stack<int> iroute;
-	iroute.push(dstnum);
 
-	int midnode=dstnum;
-	while (iroute.top() != srcnum) {
-		iroute.push(dist[iroute.top()].first);
+	int midnode = dstnum;
+	int pathnum;
+	int timedif = MAXLEN;
+	for (int i = 0; i < paths[dstnum].size(); i++) {
+		
+		for (int j = 0; j < paths[dstnum][i].size(); j++) {
+			int temp = dist[paths[dstnum][i][j]] - dist[dstnum] / 2;
+			if (temp >= 0 && temp <= 45 && temp < timedif) {
+				timedif = temp;
+				midnode = paths[dstnum][i][j];
+				pathnum = i;
+			}
+		}
+		
+	}
 
-		int temp = dist[iroute.top()].second - dist[dstnum].second / 2;
-		if (temp >= 0 && temp <= 30) {
-			midnode = iroute.top();
+	cout << stlist[srcnum].name << endl;
+	for (int i = 1; i < paths[dstnum][pathnum].size(); i++) {
+		if (stlist[paths[dstnum][pathnum][i]].name != stlist[paths[dstnum][pathnum][i - 1]].name) {
+			cout << stlist[paths[dstnum][pathnum][i]].name << endl;
 		}
+		
 	}
-	int prenode = dstnum;
-	while (!iroute.empty()) {
-		while (stlist[iroute.top()].name == stlist[prenode].name) {
-			iroute.pop();
-		}
-		cout << stlist[iroute.top()].num<<' '<<stlist[iroute.top()].name <<' '<< dist[iroute.top()].second << endl;
-		prenode = iroute.top();
-		iroute.pop();
-	}
-	PrintTime(dist[dstnum].second);
-	cout <<stlist[midnode].num<<' ' << stlist[midnode].name << endl;
-	PrintTime(dist[midnode].second);
-	PrintTime(dist[dstnum].second - dist[midnode].second); 
+
+	PrintTime(dist[dstnum]);
+	cout << stlist[midnode].name << endl;
+	PrintTime(dist[midnode]);
+	PrintTime(dist[dstnum] - dist[midnode]); 
 }
 
 void MatrixWGraph::PrintTime(int time) {
