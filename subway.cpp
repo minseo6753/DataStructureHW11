@@ -126,12 +126,12 @@ void MatrixWGraph::PrintRoute(int srcnum, int dstnum) {
 		while (stlist[iroute.top()].name == stlist[prenode].name) {
 			iroute.pop();
 		}
-		cout << stlist[iroute.top()].num << ' ' << stlist[iroute.top()].name << ' ' << dist[iroute.top()].second << endl;
+		cout << stlist[iroute.top()].name << endl;
 		prenode = iroute.top();
 		iroute.pop();
 	}
 	PrintTime(dist[dstnum].second);
-	cout << stlist[midnode].num << ' ' << stlist[midnode].name << endl;
+	cout << stlist[midnode].name << endl;
 
 	PrintTime(dist[dstnum].second / 2 + midtime);
 	PrintTime(dist[dstnum].second / 2 - midtime);
