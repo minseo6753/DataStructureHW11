@@ -14,10 +14,9 @@ struct Station {
 };
 
 class MatrixWGraph {
-	int node;
-	int vertex;
-	int** length;
-	bool* s;
+	int node; //노드의 갯수
+	int** length; //두 역 사이 소요시간
+	bool* s; //방문 처리
 	pair<int, int>* dist; //first는 이전 노드번호 second는 소요시간
 	Station* stlist; //역의 배열. 인덱스값이 노드의 번호가 된다
 	int count; //stlist에 들어있는 원소의 갯수
