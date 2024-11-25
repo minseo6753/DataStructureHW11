@@ -1,7 +1,7 @@
 #include "subway.h"
 #include <stack>
 
-MatrixWGraph::MatrixWGraph(int n = 0) :node(n), vertex(0), count(0) {
+MatrixWGraph::MatrixWGraph(int n = 0) :node(n), count(0) {
 	length = new int* [n];
 	for (int i = 0; i < n; i++) {
 		length[i] = new int[n];
@@ -13,11 +13,11 @@ MatrixWGraph::MatrixWGraph(int n = 0) :node(n), vertex(0), count(0) {
 	s = new bool[n]();
 	dist = new int[n];
 	stlist = new Station[n];
-	paths.resize(n);
+	paths = new vector<vector<int>>[n];
 }
 
 void MatrixWGraph::AddVertex(int num1, string name1, int num2, string name2) {
-	vertex++;
+	
 	Station station1(num1, name1);
 	Station station2(num2, name2);
 
@@ -129,13 +129,12 @@ void MatrixWGraph::PrintRoute(int srcnum, int dstnum) {
 		
 		for (int j = 0; j < paths[dstnum][i].size(); j++) {
 			int temp = dist[paths[dstnum][i][j]] - dist[dstnum] / 2;
-			if (temp >= 0 && temp <= 45 && temp < timedif) {
+			if (temp >= 0 && temp < timedif) {
 				timedif = temp;
 				midnode = paths[dstnum][i][j];
 				pathnum = i;
 			}
 		}
-		
 	}
 
 	cout << stlist[srcnum].name << endl;
