@@ -20,17 +20,12 @@ int main(int argc, char* argv[])
 	fin >> numLine;
 	//데이터 받는 과정
 	MatrixWGraph g(numLine);
-	fin.ignore();
+
 	int num1, num2;
 	string name1, name2;
-	string temp;
-	while (true) {
-		if (!getline(fin, temp, ' ')) break;
-		num1 = stoi(temp);
-		getline(fin, name1, ' ');
-		getline(fin, temp, ' ');
-		num2 = stoi(temp);
-		getline(fin, name2);
+	
+	while (fin >> num1 >> name1 >> num2 >> name2) {
+		
 		g.AddVertex(num1, name1, num2, name2);
 	}
 	//…

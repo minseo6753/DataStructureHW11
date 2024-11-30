@@ -1,7 +1,7 @@
 #include "subway.h"
 #include <stack>
 
-MatrixWGraph::MatrixWGraph(int n = 0) :node(n), vertex(0), count(0) {
+MatrixWGraph::MatrixWGraph(int n = 0) :node(n), count(0) {
 	length = new int* [n];
 	for (int i = 0; i < n; i++) {
 		length[i] = new int[n];
@@ -16,7 +16,7 @@ MatrixWGraph::MatrixWGraph(int n = 0) :node(n), vertex(0), count(0) {
 }
 
 void MatrixWGraph::AddVertex(int num1, string name1, int num2, string name2) {
-	vertex++;
+
 	Station station1(num1, name1);
 	Station station2(num2, name2);
 
@@ -110,28 +110,32 @@ void MatrixWGraph::PrintRoute(int srcnum, int dstnum) {
 	stack<int> iroute;
 	iroute.push(dstnum);
 
-	int midnode=dstnum;
+	int midnode = dstnum;
+	int midtime = MAXLEN;
 	while (iroute.top() != srcnum) {
 		iroute.push(dist[iroute.top()].first);
 
 		int temp = dist[iroute.top()].second - dist[dstnum].second / 2;
-		if (temp >= 0 && temp <= 30) {
+		if (abs(temp) < midtime) {
+			midtime = abs(temp);
 			midnode = iroute.top();
 		}
 	}
 	int prenode = dstnum;
-	while (!iroute.empty()) {
+	 do{
 		while (stlist[iroute.top()].name == stlist[prenode].name) {
 			iroute.pop();
 		}
-		cout << stlist[iroute.top()].num<<' '<<stlist[iroute.top()].name <<' '<< dist[iroute.top()].second << endl;
+		cout << stlist[iroute.top()].name << endl;
 		prenode = iroute.top();
 		iroute.pop();
-	}
+	 } while (stlist[dstnum].name != stlist[prenode].name);
 	PrintTime(dist[dstnum].second);
-	cout <<stlist[midnode].num<<' ' << stlist[midnode].name << endl;
-	PrintTime(dist[midnode].second);
-	PrintTime(dist[dstnum].second - dist[midnode].second); 
+	cout << stlist[midnode].name << endl;
+
+	PrintTime(dist[dstnum].second / 2 + midtime);
+	PrintTime(dist[dstnum].second / 2 - midtime);
+
 }
 
 void MatrixWGraph::PrintTime(int time) {
